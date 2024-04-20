@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "Jira Quick Access",
+  "description": "Basic jira quick access extension",
+  "version": "0.1",
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": "icon.png"
+  },
+  "background": {
+    "service_worker": "service-worker.js",
+    "type": "module"
+  },
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://*.atlassian.net/"
+  ]
+}
