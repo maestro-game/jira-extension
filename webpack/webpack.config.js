@@ -5,6 +5,7 @@ module.exports = {
 	entry: {
 		"service-worker": path.resolve(__dirname, "..", "src", "service-worker.ts"),
 		"popup": path.resolve(__dirname, "..", "src", "popup.ts"),
+		"plugin": path.resolve(__dirname, "..", "src", "plugin.ts"),
 	},
 	output: {
 		path: path.join(__dirname, "../dist"),
