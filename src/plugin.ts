@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 function fetchJiraIssues() {
     chrome.storage.sync.get(['token', 'email', 'projectUrl'], function (data) {
-        fetch(data.projectUrl, {
+        fetch(data.projectUrl + 'rest/api/2/search?jql=project=SPO&assignee=currentuser()', {
             headers: {
                 'Authorization': 'Basic ' + btoa(data.email+':'+data.token),
                 'Accept': 'application/json'
