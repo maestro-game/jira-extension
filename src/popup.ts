@@ -1,31 +1,26 @@
 document.addEventListener('DOMContentLoaded', function () {
-    fetchJiraIssues()
-});
-
-function fetchJiraIssues() {
-    const jiraUrl = 'https://smtchekin.atlassian.net/rest/api/2/search?jql=project=SPO&assignee=currentuser()'
-
-    fetch(jiraUrl, {
-        headers: {
-            'Authorization': 'Basic ' + btoa('EMAIL:TOKEN'),
-            'Accept': 'application/json'
+    chrome.storage.sync.get(['token', 'email'], function (data) {
+        if (data.token && data.email) {
+            window.location.href = 'plugin.html';
         }
-    })
-    .then(response => response.json())
-    .then(data => {
-        displayIssues(data.issues)
-    })
-    .catch(error => {
-        console.error('Error fetching Jira issues:', error)
-    })
-}
-
-function displayIssues(issues: any) {
-    const issueList = document.getElementById('issueList')
-
-    issues.forEach((issue: any) => {
-        const listItem = document.createElement('li');
-        listItem.textContent = `${issue.key} - ${issue.fields.summary}`
-        issueList?.appendChild(listItem)
-    })
-}
+    });
+    const form = document.getElementById('settingsForm');
+    if (form != null){
+        form.addEventListener('submit', function (event) {
+        event.preventDefault();
+    
+        const token = (document.getElementById('tokenInput') as HTMLInputElement).value;
+        const email = (document.getElementById('emailInput') as HTMLInputElement).value;
+        const projectUrl = (document.getElementById('projectUrlInput') as HTMLInputElement).value;
+    
+        chrome.storage.sync.set({
+            token: token,
+            email: email,
+            projectUrl: projectUrl
+        }, function () {
+            window.location.href = 'plugin.html';
+        });
+        });
+    }
+  });
+  

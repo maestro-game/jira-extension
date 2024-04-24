@@ -1,15 +1,10 @@
-let active = false;
-
-function makeOrange(color: string): void {
-    document.body.style.backgroundColor = color;
-}
-
-chrome.action.onClicked.addListener((tab) => {
-    active = !active;
-    const color = active ? 'orange' : 'white';
-    chrome.scripting.executeScript({
-        target: {tabId: tab.id ? tab.id : -1},
-        func: makeOrange,
-        args: [color]
-    }).then();
-});
+chrome.runtime.onInstalled.addListener(function () {
+    // Установка начальных значений в хранилище
+    chrome.storage.sync.set({
+      token: '',
+      email: '',
+      projectUrl: ''
+    }, function () {
+      console.log('Инициализация данных');
+    });
+  });
