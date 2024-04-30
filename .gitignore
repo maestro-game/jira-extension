@@ -1,4 +1,9 @@
 ### Node ###
+
+# extension files
+*.pem
+*.crx
+
 # Logs
 logs
 *.log
