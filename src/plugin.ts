@@ -5,14 +5,15 @@ const extData = new ExtensionData();
 document.addEventListener('DOMContentLoaded', function () {
     fetchJiraIssues()
 });
-
+//https://smtchekin.atlassian.net/rest/api/2/search?jql=project%3DSPO%26assignee%3Dcurrentuser()
+//extData.apiUrl + 'search?jql=' + encodeURI('project=SPO&assignee=currentuser()'
 function fetchJiraIssues() {
     chrome.storage.sync.get(['token', 'email', 'projectUrl'], function (data) {
         extData.token = data.token
         extData.email = data.email
         extData.projectUrl = data.projectUrl
         extData.apiUrl = extData.projectUrl + 'rest/api/2/'
-        fetch(extData.apiUrl + 'search?jql=' + encodeURI('project=SPO&assignee=currentuser()'), {
+        fetch(extData.apiUrl + 'search?jql=' + encodeURIComponent('project=SPO&assignee=currentuser()'), {
             headers: {
                 'Authorization': 'Basic ' + btoa(extData.email + ':' + extData.token),
                 'Accept': 'application/json'
@@ -21,11 +22,13 @@ function fetchJiraIssues() {
         .then(response => response.json())
         .then(data => {
             displayIssues(data.issues)
+            console.log(extData.apiUrl + 'search?jql=' + encodeURIComponent('project=SPO&assignee=currentuser()'))
         })
         .catch(error => {
             console.error('Error fetching Jira issues:', error)
         })
     });
+    
 }
 
 function getIssue(issuekey: string): Promise<any> {
