@@ -1,9 +1,37 @@
 import { ExtensionData } from "./extension-data";
+declare var bootstrap: any;
 
 const extData = new ExtensionData();
 
+function drawSearch(resultElem: HTMLElement, searchText: string) {
+    fetch(extData.apiUrl + `search?jql=text%20~%20"${encodeURIComponent(searchText)}%2A"`, {
+        headers: {
+            'Authorization': 'Basic ' + btoa(extData.email + ':' + extData.token),
+            'Accept': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        displayIssues(resultElem, data.issues)
+    })
+    .catch(error => {
+        console.error('Error fetching Jira issues:', error)
+    })
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     fetchJiraIssues()
+    document.getElementById('button-search')!.onclick = () => {
+        const input = (document.getElementById("searchField") as HTMLInputElement);
+        const searchText = input.value
+        if (searchText) {
+            input.value = ''
+            new bootstrap.Offcanvas('#offcanvasSearch').show()
+            const resultElem = document.getElementById('offcanvasSearchResult')!
+            resultElem.innerHTML = ''
+            drawSearch(resultElem, searchText)
+        }
+    };
 });
 function fetchJiraIssues() {
     chrome.storage.sync.get(['token', 'email', 'projectUrl'], function (data) {
@@ -19,7 +47,7 @@ function fetchJiraIssues() {
         })
         .then(response => response.json())
         .then(data => {
-            displayIssues(data.issues)
+            displayIssues(document.getElementById('issueList')!, data.issues)
         })
         .catch(error => {
             console.error('Error fetching Jira issues:', error)
@@ -43,11 +71,6 @@ function getIssue(issuekey: string): Promise<any> {
 }
 
 function changeStatus(issue: any, transitionId: number) {
-    console.log(JSON.stringify({
-        transition: {
-            id: transitionId
-        }
-    }))
     fetch(extData.apiUrl + `issue/${issue.key}/transitions`, {
         method: "POST",
         headers: {
@@ -134,10 +157,9 @@ function drawIssue(issueElem: HTMLElement, issue: any) {
         </h2>
         <div id="ac_col_${issue.key}" class="accordion-collapse collapse" aria-labelledby="ac_head_${issue.key}" data-bs-parent="#accordionExample">
             <div class="accordion-body" id="ac_body_${issue.key}">
-                
             </div>
             <div class="accordion-body">
-                ${issue.fields.description}
+                ${issue.fields.description || '<b>No description</b>'}
             </div>
             <ul class="list-group" id="ac_comm_${issue.key}">
                 No comments
@@ -146,9 +168,7 @@ function drawIssue(issueElem: HTMLElement, issue: any) {
         `
 }
 
-function displayIssues(issues: any) {
-    const issueList = document.getElementById('issueList')
-
+function displayIssues(issueList: HTMLElement, issues: any) {
     issues.forEach((issue: any) => {
         const issueElem = document.createElement('div')
         issueElem.id = `issue-${issue.key}`

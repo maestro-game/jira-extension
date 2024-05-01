@@ -5,26 +5,38 @@
     <title>Jira Assigned Issues</title>
     <style>
         body {
-            width: 300px;
+            width: 600px;
+            height: 550px;
+            margin: 10px;
         }
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        li {
-            margin-bottom: 10px;
+        .offcanvas {
+            --bs-offcanvas-width: 100vw;
+            --bs-offcanvas-height: 100vh;
         }
     </style>
 </head>
 <body>
     <h2>Jira Assigned Issues</h2>
-    <div class="mb-3">
-        <input type="text" class="form-control" id="issueSearch" placeholder="Your Issue...">
-        <button type="button" class="btn btn-info">Search</button>
+    <div class="input-group mb-3">
+        <input type="text" id="searchField" class="form-control" placeholder="Search issue" aria-label="Search issue by text" aria-describedby="button-search">
+        <button class="btn btn-outline-secondary" type="button" id="button-search">Search</button>
     </div>
     <ul class="list-group" id="issueList">
         <!-- Issues will be appended here -->
     </ul>
+
+    <!-- Offcanvas for search -->
+    <div class="offcanvas offcanvas-top" tabindex="-1" id="offcanvasSearch" aria-labelledby="offcanvasTopLabel">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="offcanvasTopLabel">Search results</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <ul class="list-group" id="offcanvasSearchResult">
+                <!-- Issues will be appended here -->
+            </ul>
+        </div>
+      </div>
     <script src="plugin.js"></script>
     <script src="bootstrap.bundle.min.js"></script>
 </body>
