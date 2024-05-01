@@ -12,7 +12,7 @@ function fetchJiraIssues() {
         extData.email = data.email
         extData.projectUrl = data.projectUrl
         extData.apiUrl = extData.projectUrl + 'rest/api/2/'
-        fetch(extData.apiUrl + 'search?' + encodeURI('jql=project=SPO&assignee=currentuser()'), {
+        fetch(extData.apiUrl + 'search?jql=' + encodeURI('project=SPO&assignee=currentuser()'), {
             headers: {
                 'Authorization': 'Basic ' + btoa(extData.email + ':' + extData.token),
                 'Accept': 'application/json'
