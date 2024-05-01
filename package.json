@@ -1,6 +1,6 @@
 {
   "name": "jira-extension",
-  "version": "0.0.1",
+  "version": "0.3",
   "description": "Jira Extension",
   "main": "connect.js",
   "scripts": {

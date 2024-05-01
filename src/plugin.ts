@@ -149,10 +149,10 @@ function displayComments(issue: any, element: HTMLElement) {
 
 function drawIssue(issueElem: HTMLElement, issue: any) {
     issueElem!.innerHTML = `
+    <div class="accordion">
         <h2 class="accordion-header" id="ac_head_${issue.key}">
-            <a target="_blank" class="accordion-button" href="${extData.projectUrl}browse/${issue.key}">${issue.key}</a>
             <button class="accordion-button collapsed" aria-expanded="false" type="button" data-bs-toggle="collapse" data-bs-target="#ac_col_${issue.key}" aria-controls="collapseOne">
-                 - ${issue.fields.summary} - <span class="badge text-bg-light">${issue.fields.status.name}</span>
+                <a target="_blank" class="badge text-bg-info" href="${extData.projectUrl}browse/${issue.key}">${issue.key}</a>&nbsp;${issue.fields.summary}&nbsp;<span class="badge text-bg-light">${issue.fields.status.name}</span>
             </button>
         </h2>
         <div id="ac_col_${issue.key}" class="accordion-collapse collapse" aria-labelledby="ac_head_${issue.key}" data-bs-parent="#accordionExample">
@@ -165,7 +165,8 @@ function drawIssue(issueElem: HTMLElement, issue: any) {
                 No comments
             </ul>
         </div>
-        `
+        
+    </div>`
 }
 
 function displayIssues(issueList: HTMLElement, issues: any) {
