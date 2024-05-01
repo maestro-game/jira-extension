@@ -99,17 +99,49 @@ function displayStatuses(issue: any, element: HTMLElement) {
     })
 }
 
+function displayComments(issue: any, element: HTMLElement) {
+    fetch(extData.apiUrl + `issue/${issue.key}/comment`, {
+        headers: {
+            'Authorization': 'Basic ' + btoa(extData.email + ':' + extData.token),
+            'Accept': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        element.innerHTML = ''
+        data.comments.forEach((comment: any) => {
+            const row = document.createElement('li');
+            row.classList.add('list-group-item');
+            row.innerHTML = `
+                <div>${comment.author.displayName}</div>
+                <div>${comment.body}</div>
+            `
+            element.appendChild(row);
+        })
+    })
+    .catch(error => {
+        console.error('Error fetching issue status:', error)
+    })
+}
+
 function drawIssue(issueElem: HTMLElement, issue: any) {
     issueElem!.innerHTML = `
         <h2 class="accordion-header" id="ac_head_${issue.key}">
-            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#ac_col_${issue.key}" aria-expanded="true" aria-controls="collapseOne">
-                ${issue.key} - ${issue.fields.summary} - <span class="badge text-bg-light">${issue.fields.status.name}</span>
+            <a target="_blank" class="accordion-button" href="${extData.projectUrl}browse/${issue.key}">${issue.key}</a>
+            <button class="accordion-button collapsed" aria-expanded="false" type="button" data-bs-toggle="collapse" data-bs-target="#ac_col_${issue.key}" aria-controls="collapseOne">
+                 - ${issue.fields.summary} - <span class="badge text-bg-light">${issue.fields.status.name}</span>
             </button>
         </h2>
-        <div id="ac_col_${issue.key}" class="accordion-collapse collapse show" aria-labelledby="ac_head_${issue.key}" data-bs-parent="#accordionExample">
+        <div id="ac_col_${issue.key}" class="accordion-collapse collapse" aria-labelledby="ac_head_${issue.key}" data-bs-parent="#accordionExample">
             <div class="accordion-body" id="ac_body_${issue.key}">
                 
             </div>
+            <div class="accordion-body">
+                ${issue.fields.description}
+            </div>
+            <ul class="list-group" id="ac_comm_${issue.key}">
+                No comments
+            </ul>
         </div>
         `
 }
@@ -123,5 +155,6 @@ function displayIssues(issues: any) {
         drawIssue(issueElem, issue)
         issueList?.appendChild(issueElem)
         displayStatuses(issue, document.getElementById(`ac_body_${issue.key}`)!)
+        displayComments(issue, document.getElementById(`ac_comm_${issue.key}`)!)
     })
 }
